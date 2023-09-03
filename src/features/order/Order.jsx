@@ -5,6 +5,8 @@ import {
   formatCurrency,
   formatDate,
 } from "../../utils/helpers";
+import { getOrder } from "../../services/apiRestaurant";
+import { useLoaderData } from "react-router-dom";
 
 const order = {
   id: "ABCDEF",
@@ -43,6 +45,16 @@ const order = {
 
 function Order() {
   // Everyone can search for all orders, so for privacy reasons we're gonna gonna exclude names or address, these are only for the restaurant staff
+  // const {
+  //   id,
+  //   status,
+  //   priority,
+  //   priorityPrice,
+  //   orderPrice,
+  //   estimatedDelivery,
+  //   cart,
+  // } = order;
+
   const {
     id,
     status,
@@ -51,7 +63,8 @@ function Order() {
     orderPrice,
     estimatedDelivery,
     cart,
-  } = order;
+  } = useLoaderData();
+
   const deliveryIn = calcMinutesLeft(estimatedDelivery);
 
   return (
@@ -60,7 +73,7 @@ function Order() {
         <h2>Status</h2>
 
         <div>
-          {priority && <span>Priority</span>}
+          {priority && <span>Priority </span>}
           <span>{status} order</span>
         </div>
       </div>
@@ -81,6 +94,12 @@ function Order() {
       </div>
     </div>
   );
+}
+
+export async function loader({ params }) {
+  const order = await getOrder(params.orderId);
+
+  return order;
 }
 
 export default Order;
